@@ -1,0 +1,107 @@
+---
+title: "Formative Assessment 7"
+author: "Vera Aguila"
+date: "2024-10-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Independent Samples T-Test: Invisibility Cloak
+
+The dataset "Invisibility Cloak" explores the number of mischievous acts committed by two groups: those with an invisibility cloak and those without. We will perform an independent samples t-test to determine if having an invisibility cloak significantly affects mischievous behavior.
+
+
+The dataset contains the following variables:
+
+* Participant: Participant identification number.
+* Cloak: Experimental group (0 = without a cloak, 1 = with a cloak).
+* Mischief: The number of mischievous acts committed.
+
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+data <- data.frame(
+  Participant = 1:24,
+  Cloak = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+  Mischief = c(3, 2, 4, 5, 3, 2, 4, 5, 6, 3, 2, 4, 5, 6, 8, 7, 9, 6, 7, 8, 9, 10, 6, 7)
+)
+
+head(data)
+```
+
+
+## Assumption 1: The Dependent Variable is Continuous
+The dependent variable, Mischief, is measured at a continuous level.
+
+
+<br>
+
+## Assumption 2: The Independent Variable has Two Categorical Groups
+The independent variable Cloak consists of two groups:
+
+1. Without a cloak
+2. With a cloak
+
+
+```{r}
+table(data$Cloak)
+```
+
+
+<br>
+
+## Assumption 3: Independence of Observations
+Each participant is assigned to only one group. This assumption is met since no participant appears in both groups.
+
+
+```{r}
+# Boxplot to check for outliers
+library(ggplot2)
+
+ggplot(data, aes(x = factor(Cloak), y = Mischief)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Mischief by Cloak Group", x = "Cloak", y = "Mischief")
+
+```
+
+
+<br>
+
+## Assumption 4: No Significant Outliers
+We will check for outliers in the Mischief variable using boxplots.
+
+Based on the visual inspection, we can determine if there are any extreme outliers.
+
+
+## Assumption 5: Normality of the Dependent Variable
+We will use the Shapiro-Wilk test to check if the Mischief variable is normally distributed for each group.
+
+```{r}
+# Shapiro-Wilk test for normality
+shapiro.test(data$Mischief[data$Cloak == 0])  # Without Cloak
+shapiro.test(data$Mischief[data$Cloak == 1])  # With Cloak
+
+```
+
+If p > 0.05, the data is normally distributed.
+
+
+## Independent Samples T-Test
+Finally, we will compute the independent samples t-test to compare the means between the two groups.
+
+```{r}
+t.test(Mischief ~ Cloak, data = data, var.equal = TRUE)  # Assuming equal variances
+```
+
+## Interpretation
+If p < 0.05, we reject the null hypothesis and conclude that there is a significant difference in the number of mischievous acts committed between the two groups.
+
+
+
